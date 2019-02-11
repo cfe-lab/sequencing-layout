@@ -1,4 +1,4 @@
-#!/Library/Frameworks/Python.framework/Versions/3.6/bin/python3
+#!/lib/anaconda3/bin/python3.7
 
 # Notes:
 # - When creating a file, make sure it's folder has enough permissions.
@@ -13,12 +13,14 @@ print ( "</head><body>" )
 import re, cgi, os, sys
 import datetime
 
+CGI_BIN_PATH = "/var/www/cgi-bin/"
+
 # Add the path to util scripts.
-sys.path.append( "{}/../python_dependencies/3.6/util_scripts/".format(os.getcwd()) )
+sys.path.append( "{}/depend/util_scripts/".format(CGI_BIN_PATH) )
 import mailer
 import math_utils
 
-OUT_PATH = "{}/../../sequencing_python/output/".format( os.getcwd() )  # This is the path to the output directory. (The free write directory.)
+OUT_PATH = "/alldata/WebContent/tools/sequencing_layout/output/"  # This is the path to the output directory. (The free write directory.)
 
 
 ##### Get website input.
@@ -40,10 +42,12 @@ if input_string.find('+') == -1:
 	print ( "<br><b><r style=\"color: red;\">Error:</r> Could not find any '+' characters,</b> did you format your input correctly?" )
 	sys.exit(0)
 
-input_list = input_string.split('\n')   
+input_list = input_string.split('\n')
 input_matrix = [ [] for x in range(8) ]  # This variable is for the html file. type -> [ [ (sample, primer), ... ], ... ]
 column_counter = 0
 for string in input_list:
+	if string == '':
+		continue  # This is for the case of 1 or multiple trailing newline characters that get removed.
 	sample, primer = string.split('+')
 	input_matrix[column_counter] += [ (sample, primer) ]
 	
@@ -94,7 +98,6 @@ plt_file_text = header_title + header_data + bottom_header_title + bottom_header
 plt_filename = "{}.plt".format(plate_id)
 with open(OUT_PATH+plt_filename, 'w') as new_file:
 	new_file.write( plt_file_text ) 
-	
 
 ##### Create .html file
 
@@ -140,7 +143,7 @@ with open(OUT_PATH+html_filename, 'w') as new_file:
 
 
 print ( 'Your files have been generated.<br>' )
-web_address = "http://brockman-srv.mbb.sfu.ca/~B_Team_iMac/sequencing_python/output/"
+web_address = "https://bblab-hivresearchtools.ca/tools/sequencing_layout/output/"
 print ( '<a style="font-size: 1.5em;" href="{}">Go to file directory</a><br><br>'.format(web_address) )
 
 
@@ -174,7 +177,6 @@ print ( "--"*35 )
 ##### Archive any files that are older than 30 days.
 
 
-sys.path.append( "{}/../python_dependencies/3.6/util_scripts/".format(os.getcwd()) )
 import filesys_utils
 
 archive_path = "{}Archived_Layouts/".format(OUT_PATH)
