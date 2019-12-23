@@ -1,16 +1,18 @@
-<!DOCTYPE html>
+{% extends "tool_base.html" %}
+{% load static %}
 
-<html>
+{% block head %}
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-        <link rel="stylesheet" type="text/css" href="css/style.css">
-	<script type="text/javascript" src="scripts.js"></script>
+        <link rel="stylesheet" type="text/css" href="{% static "pld_style.css" %}?v0.2">
+	<script type="text/javascript" src="{% static "pld_scripts.js" %}"></script>
 	<title>Plate Layout Designer</title>
 </head>
+{% endblock %}
 
-<body>
-
-<h1>Plate Layout Designer (<a href="https://bblab-hivresearchtools.ca/wiki/">Return to main menu</a>) (<a href="output">Show old data</a>)</h1>
+{% block content %}
+<div id="body-div">
+<h1>Plate Layout Designer (<a href="output">Show old data</a>)</h1>
 
 <table border="0" id="layout">
 
@@ -139,7 +141,8 @@
 
 <div class="menuSystem">
 
-<form name="myForm" method="post" action="../../cgi-bin/sequencing_generate_files.py" onSubmit="return validateForm()">
+<form name="myForm" method="post" action="generate_files/" onSubmit="return validateForm()">
+{% csrf_token %}
 
 <textarea class="samples" id="sampleEntry" rows="10" cols="50"></textarea>
 <textarea class="primers" id="primerEntry" rows="10" cols="50"></textarea>
@@ -158,7 +161,7 @@ Final layout goes here.
 
 	<select class="machineSelection" name="sequencingMachine" id="sequencingMachine" onchange="populate()">
 	        <option value="A"></option>
-	        <option value="B">3130XL (SFU)</option>
+	        <!-- This has been edited out because the sfu machine broke. <option value="B">3130XL (SFU)</option> -->
 	        <option value="C">3730XL (St. Pauls)</option>
 	</select>
 </div>
@@ -188,10 +191,9 @@ Final layout goes here.
 <button type="button" class="b1" onClick="clearFields()">Reset</button>
 <button type="button" class="b2" onClick="dumpTable()">Update FROM table</button>
 <input type="submit" class="b3" name="subbtn" value="Submit">
-<p style="color: grey; font-size: 0.6em;">Note: All data from the old version of this tool has been copied into this tool's "Old_Archived_Layouts" folder.<br>Written in python.</p>
+<p style="color: grey; font-size: 0.6em;">Note: All data from the old version of this tool has been copied into this tool's "Old_Archived_Layouts" folder.</p>
 </form>
 </div>
 
-
-</body>
-</html>
+</div>
+{% endblock %}
